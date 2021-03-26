@@ -24,6 +24,9 @@ def check_combination(cards):
     if len(cards) != 14:
         return False
     card_count = Counter(cards)
+    for key in card_count:
+        if card_count[key] > 4:
+            return False
     legal_eyes = extract_eyes(card_count)
     if not legal_eyes:
         return False
@@ -91,4 +94,5 @@ def extract_eyes(card_count):
 
 if __name__ == "__main__":
     hand = "233334666888ff"
+    print(hand)
     print(judge_ryuiso(hand))
