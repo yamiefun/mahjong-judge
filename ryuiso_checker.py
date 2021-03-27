@@ -13,7 +13,7 @@ class RyuisoChecker:
         ret = self._find_possibility()
         if ret:
             print("Still possible to Ryuiso.")
-            print("Case: ", ret)
+            print("Ex: ", ret)
         else:
             print("Not enough for Ryuiso.")
 
