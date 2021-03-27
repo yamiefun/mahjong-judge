@@ -5,7 +5,7 @@ from itertools import combinations
 
 class RyuisoChecker:
     def __init__(self):
-        self._init_pool = {'2': 4, '3': 4, '4': 4, '6': 4, '8': 4, 'f': 4}
+        self._init_pool = {'2s': 4, '3s': 4, '4s': 4, '6s': 4, '8s': 4, 'f': 4}
         self._pool = self._init_pool.copy()
 
     def parse_input(self, val):
@@ -13,7 +13,7 @@ class RyuisoChecker:
         ret = self._find_possibility()
         if ret:
             print("Still possible to Ryuiso.")
-            print("Ex: ", ret)
+            print(f"Ex: {ret}")
         else:
             print("Not enough for Ryuiso.")
 
@@ -33,7 +33,7 @@ class RyuisoChecker:
         pool_list = []
         for key in self._pool:
             for i in range(self._pool[key]):
-                pool_list.append(key)
+                pool_list.append(key.replace('s', ''))
         comb = combinations(pool_list, 14)
         for c in comb:
             tmp = "".join(c)
