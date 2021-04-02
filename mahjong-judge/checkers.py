@@ -43,7 +43,7 @@ class BaseChecker:
             self.logger.info("Not enough for {self.yakuman_type}.")
 
 
-class RyuisoChecker:
+class RyuisoChecker(BaseChecker):
     yakuman_type = 'ryuiso'
 
     def get_init_pool_kwargs(self):
