@@ -4,8 +4,8 @@ from collections import defaultdict
 from itertools import combinations
 import re
 
-CARD_KIND = ['sou', 'man', 'pin', 'tsu']
-CARD_PATTERN = r'(?P<card_id>[1-9]*)(?P<kind>mon|sou|tsu|pin)'
+TILE_KIND = ['sou', 'man', 'pin', 'tsu']
+TILE_PATTERN = r'(?P<card_id>[1-9]*)(?P<kind>mon|sou|tsu|pin)'
 
 
 class UnknownKindError(Exception):
@@ -36,10 +36,10 @@ class Tiles(UserDict):
             for key, value in self.data.items()
         }
 
-    def remove_card(self, kind, card_id):
+    def remove_tile(self, kind, card_id):
         """ Remove ONE card for given kind """
 
-        if kind not in CARD_KIND:
+        if kind not in TILE_KIND:
             raise UnknownKindError(f'Unknown kind {kind}')
 
         remain_cards = self._counter.get(kind)
@@ -88,11 +88,11 @@ class Tiles(UserDict):
 
     def _is_valid_combination(self, combination):
         card_count = {}
-        for matched in re.finditer(CARD_PATTERN, combination):
+        for matched in re.finditer(TILE_PATTERN, combination):
             card_count[matched.group('kind')] = (
                 Counter(matched.group('card_id'))
             )
-        for kind in CARD_KIND:
+        for kind in TILE_KIND:
             is_other_valid = False
             # First, assuming others kind without eyes
             for other_kind, count in card_count.items():
