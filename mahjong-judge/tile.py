@@ -51,6 +51,7 @@ class Tiles(UserDict):
 
     @property
     def _combinations(self):
+        # card pair like: ('sou', 1)
         card_pairs = [
             (key, v)
             for key, value in self.data.items()
@@ -59,8 +60,11 @@ class Tiles(UserDict):
         all_combinations = set(combinations(card_pairs, 14))
         for combination in all_combinations:
             combination_dict = defaultdict(str)
+            # organize all kind to mapping like: 'sou: 1123'
             for kind, card_id in combination:
                 combination_dict[kind] += card_id
+
+            # construct cards string
             combination_str = ''
             for kind, value in combination_dict.items():
                 combination_str += ''.join(sorted(value))
@@ -75,7 +79,7 @@ class Tiles(UserDict):
 
     def _get_eyes(self, card_count):
         """
-        input -> dict: {card point: number of the card}
+        input -> dict: {card id: number of the card}
         output -> list of str: legal eyes
         """
         for key in card_count:
@@ -90,6 +94,7 @@ class Tiles(UserDict):
             )
         for kind in CARD_KIND:
             is_other_valid = False
+            # First, assuming others kind without eyes
             for other_kind, count in card_count.items():
                 if other_kind == kind:
                     continue
@@ -99,6 +104,7 @@ class Tiles(UserDict):
                 break
             if not is_other_valid:
                 continue
+            # Check remain cards
             count = card_count[kind].copy()
             for eye in self._get_eyes(count):
                 count[eye] -= 2
