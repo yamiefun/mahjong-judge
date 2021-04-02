@@ -16,7 +16,7 @@ class InvalidOperationError(Exception):
     pass
 
 
-class Cards(UserDict):
+class Tiles(UserDict):
     def __init__(
             self,
             sou='',  # 索
