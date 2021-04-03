@@ -5,7 +5,7 @@ from itertools import combinations
 import re
 
 TILE_KIND = ['sou', 'man', 'pin', 'tsu']
-TILE_PATTERN = r'(?P<card_id>[1-9]*)(?P<kind>mon|sou|tsu|pin)'
+TILE_PATTERN = r'(?P<card_id>[1-9]*)(?P<kind>man|sou|tsu|pin)'
 
 
 class UnknownKindError(Exception):
@@ -36,18 +36,18 @@ class Tiles(UserDict):
             for key, value in self.data.items()
         }
 
-    def remove_tile(self, kind, card_id):
+    def remove_tile(self, kind, tile_id):
         """ Remove ONE card for given kind """
 
         if kind not in TILE_KIND:
             raise UnknownKindError(f'Unknown kind {kind}')
 
         remain_cards = self._counter.get(kind)
-        if not (card_id in remain_cards and remain_cards[card_id]):
+        if not (tile_id in remain_cards and remain_cards[tile_id]):
             raise InvalidOperationError(
-                f"Can't remove {card_id}{kind} from {self}")
-        remain_cards[card_id] -= 1
-        self.data[kind].replace(card_id, '', 1)
+                f"Can't remove {tile_id}{kind} from {self}")
+        remain_cards[tile_id] -= 1
+        self.data[kind] = self.data[kind].replace(tile_id, '', 1)
 
     @property
     def _combinations(self):
@@ -93,15 +93,17 @@ class Tiles(UserDict):
                 Counter(matched.group('card_id'))
             )
         for kind in TILE_KIND:
+            if kind not in card_count:
+                continue
             is_other_valid = False
             # First, assuming others kind without eyes
             for other_kind, count in card_count.items():
                 if other_kind == kind:
                     continue
-                if not self._check_combination_without_eyes(count.copy()):
-                    continue
-                is_other_valid = True
-                break
+                is_other_valid = self._check_combination_without_eyes(
+                    count.copy())
+                if not is_other_valid:
+                    break
             if not is_other_valid:
                 continue
             # Check remain cards
@@ -118,11 +120,11 @@ class Tiles(UserDict):
         input: -> dict: {card point: number of the card}
         output -> bool: legal or not
         """
-        key_list = sorted(list(card_count.keys()))
         # if nothing left in card set, is legal
-        if not card_count:
+        if not card_count or not any(list(card_count.values())):
             return True
 
+        key_list = sorted(list(card_count.keys()))
         # check by recursive
         # remove smallest Triplet
         if card_count[key_list[0]] >= 3:
